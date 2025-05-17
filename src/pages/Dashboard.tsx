@@ -110,11 +110,14 @@ const Dashboard = () => {
           </div>
         </div>
         
-        {/* Environmental Factors Title */}
+        {/* Environmental Factors Title - Updated to match style from other pages */}
         <div className="text-center mb-8">
-          <h2 className="text-xl font-medium text-muted-foreground">
-            These external factors can influence your stress level
+          <h2 className="text-2xl font-semibold leading-none tracking-tight mb-2">
+            Environmental Factors
           </h2>
+          <p className="text-sm text-muted-foreground">
+            These external factors can influence your stress level
+          </p>
         </div>
         
         {/* Environmental Factors Bubbles - Updated with more consistent color scheme */}
