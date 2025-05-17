@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface WelcomeHeaderProps {
   firstName: string;
@@ -30,14 +31,16 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ firstName, stressLevel })
       </div>
       
       {/* Stress Analysis Text */}
-      <div className="text-center mb-16 max-w-3xl mx-auto w-full">
-        <p className="text-xl font-medium text-muted-foreground mb-2">
-          I can see that today you seem {stressLevel}.
-        </p>
-        <p className="text-xl font-medium text-mindsense-primary">
-          I can help you!
-        </p>
-      </div>
+      <Card className="max-w-3xl mx-auto mb-16 text-center">
+        <CardContent className="py-6">
+          <p className="text-xl font-medium text-muted-foreground mb-2">
+            I can see that today you seem quite stressed.
+          </p>
+          <p className="text-xl font-medium text-mindsense-primary">
+            I can help you!
+          </p>
+        </CardContent>
+      </Card>
     </>
   );
 };
