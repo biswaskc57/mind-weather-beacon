@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import { useLocation } from '@/hooks/use-location';
 import { useEnvironmentalData } from '@/hooks/use-environmental-data';
@@ -16,6 +16,8 @@ const Dashboard = () => {
     lastName: 'Morgan',
   };
 
+  const [rawApiData, setRawApiData] = useState<any>(null);
+  
   const { location } = useLocation();
   const { data: environmentalData, refetch } = useEnvironmentalData({
     latitude: location?.latitude,
@@ -23,10 +25,32 @@ const Dashboard = () => {
   });
   const { stressData } = useStressMeter({ environmentalData });
 
-  // Generate mock historical data for air quality
+  // Fetch raw API data for charts
+  useEffect(() => {
+    const fetchRawData = async () => {
+      try {
+        const lat = location?.latitude || 60.17;
+        const lon = location?.longitude || 24.94;
+        const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index,allergens_grass_pollen`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch raw API data');
+        
+        const data = await response.json();
+        setRawApiData(data);
+      } catch (err) {
+        console.error('Error fetching raw API data:', err);
+      }
+    };
+    
+    fetchRawData();
+  }, [location]);
+
+  // Generate air quality history data
   const airQualityHistory = generateAirQualityHistory(
     environmentalData?.airQuality.pm25,
-    environmentalData?.airQuality.pm10
+    environmentalData?.airQuality.pm10,
+    rawApiData
   );
 
   return (
