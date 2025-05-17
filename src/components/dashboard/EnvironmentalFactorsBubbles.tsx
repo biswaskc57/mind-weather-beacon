@@ -14,8 +14,14 @@ interface BubbleProps {
   textColor: string;
 }
 
+interface EnvironmentalFactor {
+  name: string;
+  impact: number;
+  description: string;
+}
+
 interface EnvironmentalFactorsBubblesProps {
-  factors: BubbleProps[];
+  factors: EnvironmentalFactor[];
 }
 
 // Default factors if none are provided
@@ -57,6 +63,38 @@ const defaultFactors: BubbleProps[] = [
   }
 ];
 
+// Map environmental factors to bubble props
+const mapFactorsToBubbles = (factors: EnvironmentalFactor[]): BubbleProps[] => {
+  if (!factors || factors.length === 0) return defaultFactors;
+  
+  // Only map the factors if we have them
+  // This is a simple mapping, in a real app you might want to do something more sophisticated
+  const positions = [
+    { left: '15%', top: '100px' },
+    { right: '15%', top: '100px' },
+    { bottom: '20px', left: '50%' },
+    { right: '25%', top: '30px' },
+    { left: '25%', top: '30px' }
+  ];
+  
+  const colors = [
+    { color: 'bg-green-200', textColor: 'text-black' },
+    { color: 'bg-blue-300', textColor: 'text-white' },
+    { color: 'bg-green-300', textColor: 'text-black' },
+    { color: 'bg-blue-400', textColor: 'text-white' },
+    { color: 'bg-green-100', textColor: 'text-black' }
+  ];
+  
+  const sizes = ['large', 'large', 'medium', 'small', 'tiny'] as const;
+  
+  return factors.slice(0, 5).map((factor, index) => ({
+    factor: factor.name,
+    size: sizes[index % sizes.length],
+    position: positions[index % positions.length],
+    ...colors[index % colors.length]
+  }));
+};
+
 const getBubbleSize = (size: BubbleProps['size']) => {
   switch (size) {
     case 'large':
@@ -72,23 +110,22 @@ const getBubbleSize = (size: BubbleProps['size']) => {
   }
 };
 
-const EnvironmentalFactorsBubbles: React.FC<EnvironmentalFactorsBubblesProps> = ({ 
-  factors = defaultFactors 
-}) => {
+const EnvironmentalFactorsBubbles: React.FC<EnvironmentalFactorsBubblesProps> = ({ factors }) => {
+  // Map the environmental factors to bubble props
+  const bubbles = mapFactorsToBubbles(factors);
+  
   return (
     <div className="flex justify-center mb-16 max-w-3xl mx-auto w-full">
       <div className="relative w-full h-[400px]">
-        {factors.map((bubble, index) => {
+        {bubbles.map((bubble, index) => {
           const sizeClasses = getBubbleSize(bubble.size);
-          const positionClasses = Object.entries(bubble.position).map(
-            ([key, value]) => `${key === 'left' && value.includes('%') && 'transform -translate-x-1/2'}`
-          ).join(' ');
+          const positionStyle = bubble.position || {};
           
           return (
             <div
               key={index}
-              className={`absolute ${sizeClasses} rounded-full ${bubble.color} flex items-center justify-center ${bubble.textColor} font-semibold ${positionClasses}`}
-              style={bubble.position as React.CSSProperties}
+              className={`absolute ${sizeClasses} rounded-full ${bubble.color} flex items-center justify-center ${bubble.textColor} font-semibold`}
+              style={positionStyle}
             >
               {bubble.factor}
             </div>
