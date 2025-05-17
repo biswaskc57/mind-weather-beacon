@@ -7,6 +7,7 @@ import PersonalMeters from '@/components/dashboard/PersonalMeters';
 import ChartCard from '@/components/dashboard/ChartCard';
 import InsightCard from '@/components/dashboard/InsightCard';
 import MindWeatherWidget from '@/components/dashboard/MindWeatherWidget';
+import SuggestionSection from '@/components/dashboard/SuggestionSection';
 import { Button } from '@/components/ui/button';
 import { useLocation } from '@/hooks/use-location';
 import { useEnvironmentalData } from '@/hooks/use-environmental-data';
@@ -110,6 +111,12 @@ const Dashboard = () => {
           <StressMeter 
             value={stressData?.score || 50} 
             recentTrend={stressData?.trend || 'stable'} 
+          />
+          
+          {/* New Suggestions Section */}
+          <SuggestionSection
+            environmentalData={environmentalData}
+            stressData={stressData}
           />
           
           <ChartCard 
