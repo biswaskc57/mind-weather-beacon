@@ -10,12 +10,12 @@ import {
   BrainIcon, 
   SettingsIcon, 
   CalendarIcon, 
-  UserIcon,
-  MenuIcon,
-  XIcon
+  UserIcon
 } from '@/components/icons/Icons';
+import { Activity } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
+import { Menu, X } from 'lucide-react';
 
 interface NavItemProps {
   to: string;
@@ -54,6 +54,7 @@ const SideNavContent = ({ onItemClick }: { onItemClick?: () => void }) => {
         </div>
         <nav className="space-y-1">
           <NavItem to="/" label="Dashboard" icon={<ChartBarIcon />} onClick={onItemClick} />
+          <NavItem to="/metrics" label="Health Metrics" icon={<Activity className="h-5 w-5" />} onClick={onItemClick} />
           <NavItem to="/environment" label="Environment" icon={<CloudIcon />} onClick={onItemClick} />
           <NavItem to="/location" label="Location" icon={<CompassIcon />} onClick={onItemClick} />
           <NavItem to="/stress" label="Stress Meter" icon={<BrainIcon />} onClick={onItemClick} />
@@ -95,7 +96,7 @@ const SideNav = () => {
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerTrigger asChild>
             <Button variant="ghost" className="p-1 h-10 w-10">
-              <MenuIcon className="h-6 w-6" />
+              <Menu className="h-6 w-6" />
             </Button>
           </DrawerTrigger>
           <DrawerContent className="h-[85vh]">
@@ -106,7 +107,7 @@ const SideNav = () => {
                   className="p-1 h-9 w-9" 
                   onClick={() => setIsDrawerOpen(false)}
                 >
-                  <XIcon className="h-6 w-6" />
+                  <X className="h-6 w-6" />
                 </Button>
               </div>
               <SideNavContent onItemClick={() => setIsDrawerOpen(false)} />

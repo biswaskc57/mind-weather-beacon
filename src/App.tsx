@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
+import MetricsPage from "./pages/MetricsPage";
 import EnvironmentPage from "./pages/EnvironmentPage";
 import LocationPage from "./pages/LocationPage";
 import StressPage from "./pages/StressPage";
@@ -57,6 +57,14 @@ const App = () => (
             element={
               <RequireOnboarding>
                 <Dashboard />
+              </RequireOnboarding>
+            } 
+          />
+          <Route 
+            path="/metrics" 
+            element={
+              <RequireOnboarding>
+                <MetricsPage />
               </RequireOnboarding>
             } 
           />

@@ -1,176 +1,168 @@
 
 import React from 'react';
 import MainLayout from '@/components/layout/MainLayout';
-import EnvironmentalCard from '@/components/dashboard/EnvironmentalCard';
-import StressMeter from '@/components/dashboard/StressMeter';
-import PersonalMeters from '@/components/dashboard/PersonalMeters';
-import ChartCard from '@/components/dashboard/ChartCard';
-import InsightCard from '@/components/dashboard/InsightCard';
-import MindWeatherWidget from '@/components/dashboard/MindWeatherWidget';
-import SuggestionSection from '@/components/dashboard/SuggestionSection';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
+import SuggestionSection from '@/components/dashboard/SuggestionSection';
+import StressMeter from '@/components/dashboard/StressMeter';
 import { useLocation } from '@/hooks/use-location';
 import { useEnvironmentalData } from '@/hooks/use-environmental-data';
 import { useStressMeter } from '@/hooks/use-stress-meter';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { CloudIcon, MapPinIcon, WindIcon, ColdIcon, HotIcon, SunnyIcon, RainyIcon } from '@/components/icons/Icons';
+import { ArrowRight, Heart } from 'lucide-react';
 
 const Dashboard = () => {
+  // User data - in a real app, this would come from a user context or API
+  const userData = {
+    firstName: 'Alex',
+    lastName: 'Morgan',
+  };
+
   const { location } = useLocation();
-  const { data: environmentalData, isLoading: envDataLoading } = useEnvironmentalData({
+  const { data: environmentalData } = useEnvironmentalData({
     latitude: location?.latitude,
     longitude: location?.longitude
   });
   const { stressData } = useStressMeter({ environmentalData });
-  const isMobile = useIsMobile();
-  
-  // Mock data for charts - ensuring all values are numbers
-  const pm25ChartData = [
-    { name: 'Mon', value: 15 },
-    { name: 'Tue', value: 18 },
-    { name: 'Wed', value: 22 },
-    { name: 'Thu', value: 19 },
-    { name: 'Fri', value: 16 },
-    { name: 'Sat', value: 14 },
-    { name: 'Sun', value: environmentalData ? Number(environmentalData.airQuality.pm25.toFixed(1)) : 15 },
-  ];
-  
-  // Mock forecast data
-  const forecastData = [
-    {
-      day: 'Today',
-      icon: <SunnyIcon className="w-6 h-6 text-yellow-500" />,
-      condition: 'Clear Sky',
-      impact: 'positive' as const,
-      description: 'Good air quality and moderate UV index - great day for outdoor activities'
-    },
-    {
-      day: 'Tomorrow',
-      icon: <WindIcon className="w-6 h-6 text-blue-500" />,
-      condition: 'Windy',
-      impact: 'neutral' as const,
-      description: 'Increased wind may reduce air quality slightly. Temperature remains stable.'
-    },
-    {
-      day: 'Wednesday',
-      icon: <RainyIcon className="w-6 h-6 text-gray-500" />,
-      condition: 'Light Rain',
-      impact: 'negative' as const,
-      description: 'Rising humidity may increase discomfort. Consider indoor activities.'
-    },
-  ];
+
+  // Calculate overall health status
+  const getOverallStatus = () => {
+    if (!stressData) return { status: 'unknown', text: 'We need more data to assess your health' };
+    
+    if (stressData.score < 30) {
+      return { 
+        status: 'excellent', 
+        text: 'Your overall health indicators are excellent',
+        color: 'text-green-600'
+      };
+    } else if (stressData.score < 60) {
+      return { 
+        status: 'good', 
+        text: 'Your health indicators are generally good',
+        color: 'text-blue-600'
+      };
+    } else {
+      return { 
+        status: 'needs-attention', 
+        text: 'Some health factors need your attention',
+        color: 'text-amber-600'
+      };
+    }
+  };
+
+  const healthStatus = getOverallStatus();
 
   return (
     <MainLayout>
-      <div className="mb-4 md:mb-6">
-        <h1 className="text-xl md:text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm md:text-base text-muted-foreground">Your environmental health at a glance</p>
-      </div>
-      
-      {/* Status Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
-        <EnvironmentalCard
-          title="Air Quality"
-          value={environmentalData ? environmentalData.airQuality.pm25.toFixed(1) : '−−'}
-          unit="μg/m³"
-          status={environmentalData?.airQuality.pm25 < 12 ? 'good' : environmentalData?.airQuality.pm25 < 35 ? 'moderate' : 'poor'}
-          icon={<CloudIcon />}
-          change="↑ 12% from yesterday"
-        />
-        <EnvironmentalCard
-          title="Temperature"
-          value={environmentalData ? environmentalData.weather.temperature.toFixed(1) : '−−'}
-          unit="°C"
-          status={environmentalData?.weather.temperature < 30 ? 'good' : 'moderate'}
-          icon={environmentalData?.weather.temperature > 25 ? <HotIcon /> : <ColdIcon />}
-        />
-        <EnvironmentalCard
-          title="UV Index"
-          value={environmentalData ? environmentalData.weather.uvIndex.toFixed(1) : '−−'}
-          unit=""
-          status={environmentalData?.weather.uvIndex < 3 ? 'good' : environmentalData?.weather.uvIndex < 6 ? 'moderate' : 'poor'}
-          icon={<SunnyIcon />}
-        />
-        <EnvironmentalCard
-          title="Pollen"
-          value={environmentalData ? ((environmentalData.pollen.grass + environmentalData.pollen.tree + environmentalData.pollen.weed) / 3).toFixed(1) : '−−'}
-          unit="/5"
-          status={environmentalData?.pollen.grass < 3 ? 'good' : 'moderate'}
-          icon={<WindIcon />}
-        />
-      </div>
-      
-      {/* Personal Health Meters */}
-      <div className="mb-4 md:mb-6">
-        <PersonalMeters />
-      </div>
-      
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-        <div className="lg:col-span-2 space-y-4 md:space-y-6">
-          <StressMeter 
-            value={stressData?.score || 50} 
-            recentTrend={stressData?.trend || 'stable'} 
-          />
+      <div className="space-y-6">
+        {/* Welcome Section */}
+        <Card className="border-none shadow-sm bg-gradient-to-r from-mindsense-primary/10 to-mindsense-secondary/10">
+          <CardContent className="pt-6">
+            <div className="space-y-2 mb-4">
+              <h1 className="text-2xl font-bold">
+                Hello, {userData.firstName}
+              </h1>
+              <p className="text-muted-foreground">
+                Here is your current health situation
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-4 mb-4">
+              <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center">
+                <Heart className={`h-6 w-6 ${healthStatus.color}`} />
+              </div>
+              <div>
+                <h2 className={`font-medium ${healthStatus.color}`}>
+                  {healthStatus.status === 'excellent' ? 'Excellent Health Status' : 
+                   healthStatus.status === 'good' ? 'Good Health Status' : 
+                   'Health Needs Attention'}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {healthStatus.text}
+                </p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <Link to="/metrics">
+                <Button variant="outline" className="w-full">
+                  View Health Metrics
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/profile">
+                <Button variant="outline" className="w-full">
+                  Update Profile
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* Stress Meter Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Current Stress Level</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[120px]">
+                <StressMeter 
+                  value={stressData?.score || 50} 
+                  recentTrend={stressData?.trend || 'stable'} 
+                  compact={true}
+                />
+              </div>
+            </CardContent>
+          </Card>
           
-          {/* New Suggestions Section */}
-          <SuggestionSection
-            environmentalData={environmentalData}
-            stressData={stressData}
-          />
-          
-          <ChartCard 
-            title="Weekly PM2.5 Trend"
-            description="Air quality particulate matter concentration"
-            data={pm25ChartData}
-            dataKey="value"
-            color="#3B82F6"
-            unit="μg/m³"
-          />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InsightCard
-              title="Air Quality Alert"
-              description={`Current PM2.5 levels ${environmentalData?.airQuality.pm25 < 12 ? 'are good' : 'may affect sensitive individuals'}`}
-              icon={<CloudIcon />}
-              variant={environmentalData?.airQuality.pm25 < 12 ? 'success' : 'warning'}
-            />
-            <InsightCard
-              title="UV Protection"
-              description={environmentalData?.weather.uvIndex < 3 ? 'Low UV index today' : 'Wear sunscreen if outdoors'}
-              icon={<SunnyIcon />}
-              variant={environmentalData?.weather.uvIndex < 3 ? 'success' : 'warning'}
-            />
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Health Factors</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {stressData?.factors ? (
+                <div className="space-y-3">
+                  {stressData.factors.slice(0, 3).map((factor, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-sm">{factor.name}</span>
+                      <div className="ml-auto flex items-center">
+                        <div className={`h-2 w-24 rounded-full ${
+                          factor.impact > 5 ? 'bg-red-200' : 
+                          factor.impact > 2 ? 'bg-amber-200' : 'bg-green-200'
+                        }`}>
+                          <div className={`h-full rounded-full ${
+                            factor.impact > 5 ? 'bg-red-500' : 
+                            factor.impact > 2 ? 'bg-amber-500' : 'bg-green-500'
+                          }`} style={{width: `${(factor.impact / 10) * 100}%`}}></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-[100px]">
+                  <p className="text-muted-foreground">No health factor data available</p>
+                </div>
+              )}
+              <div className="mt-4">
+                <Link to="/metrics">
+                  <Button variant="ghost" size="sm" className="w-full">
+                    See all factors
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
         
-        <div className="space-y-4 md:space-y-6">
-          <MindWeatherWidget forecasts={forecastData} />
-          
-          <div className="bg-white rounded-lg p-4 border border-gray-200">
-            <h3 className="font-medium mb-3">Your Location</h3>
-            {location ? (
-              <div className="flex items-center space-x-2">
-                <MapPinIcon className="w-5 h-5 text-mindsense-primary" />
-                <span>{location.city || 'Unknown Location'}</span>
-              </div>
-            ) : (
-              <Button variant="outline" size="sm" className="w-full">
-                Set Location
-              </Button>
-            )}
-          </div>
-          
-          {!isMobile && (
-            <div className="bg-white rounded-lg p-4 border border-gray-200">
-              <h3 className="font-medium mb-2">Daily Tip</h3>
-              <p className="text-sm text-gray-600 mb-3">
-                Spending time in nature has been shown to reduce stress and improve mood, even in urban environments.
-              </p>
-              <Button variant="link" className="p-0 h-auto">Learn more</Button>
-            </div>
-          )}
-        </div>
+        {/* Personalized Suggestions */}
+        <SuggestionSection
+          environmentalData={environmentalData}
+          stressData={stressData}
+        />
       </div>
     </MainLayout>
   );
