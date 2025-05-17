@@ -20,7 +20,7 @@ const Dashboard = () => {
   });
   const { stressData } = useStressMeter({ environmentalData });
   
-  // Mock data for charts
+  // Mock data for charts - ensuring all values are numbers
   const pm25ChartData = [
     { name: 'Mon', value: 15 },
     { name: 'Tue', value: 18 },
@@ -28,7 +28,7 @@ const Dashboard = () => {
     { name: 'Thu', value: 19 },
     { name: 'Fri', value: 16 },
     { name: 'Sat', value: 14 },
-    { name: 'Sun', value: environmentalData?.airQuality.pm25.toFixed(1) || 15 },
+    { name: 'Sun', value: environmentalData ? Number(environmentalData.airQuality.pm25.toFixed(1)) : 15 },
   ];
   
   // Mock forecast data
