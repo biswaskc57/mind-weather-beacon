@@ -53,7 +53,9 @@ const Dashboard = () => {
         />
         
         {/* Environmental Factors Bubbles */}
-        <EnvironmentalFactorsBubbles />
+        <EnvironmentalFactorsBubbles 
+          factors={stressData?.factors || []}
+        />
       </div>
     </MainLayout>
   );
