@@ -11,18 +11,24 @@ interface WelcomeHeaderProps {
 const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ firstName, stressLevel }) => {
   return (
     <>
-      {/* Header with Avatar Section */}
-      <div className="flex items-center justify-center gap-4 mb-8 max-w-3xl mx-auto w-full">
+      {/* Header Section */}
+      <div className="text-center mb-4 max-w-3xl mx-auto w-full">
         <h1 className="text-3xl font-bold text-black">
           Hi {firstName}
         </h1>
-        <Avatar className="h-16 w-16">
+      </div>
+      
+      {/* User Image Section */}
+      <div className="flex justify-center mb-8 max-w-3xl mx-auto w-full">
+        <Avatar className="h-40 w-40">
           <AvatarImage 
-            src="/lovable-uploads/2538149c-abf7-4d41-8866-760644fcc7a6.png" 
-            alt="AI Assistant" 
+            src="/lovable-uploads/1db0de0e-33bd-4f44-ae8f-c54b7b3a64c5.png" 
+            alt="User Avatar" 
             className="object-cover"
           />
-          <AvatarFallback className="bg-mindsense-primary text-white text-2xl">AI</AvatarFallback>
+          <AvatarFallback className="bg-mindsense-primary text-white text-4xl">
+            {firstName.charAt(0)}
+          </AvatarFallback>
         </Avatar>
       </div>
       
