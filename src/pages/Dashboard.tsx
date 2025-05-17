@@ -90,8 +90,8 @@ const Dashboard = () => {
           </p>
         </div>
         
-        {/* Stress Score Card - imported from StressPage */}
-        <Card className="mb-16">
+        {/* Stress Score Card - imported from StressPage, with consistent max-width */}
+        <Card className="mb-16 max-w-3xl mx-auto w-full">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center gap-6">
               {/* Circular Score Display */}
@@ -194,7 +194,7 @@ const Dashboard = () => {
         </Card>
         
         {/* Environmental Factors Title - Updated to match style from other pages */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 max-w-3xl mx-auto w-full">
           <h2 className="text-2xl font-semibold leading-none tracking-tight mb-2">
             Environmental Factors
           </h2>
@@ -203,16 +203,16 @@ const Dashboard = () => {
           </p>
         </div>
         
-        {/* Environmental Factors Bubbles - Updated with more consistent color scheme */}
-        <div className="flex justify-center mb-16">
-          <div className="relative w-[500px] h-[400px]">
+        {/* Environmental Factors Bubbles - Updated with consistent width */}
+        <div className="flex justify-center mb-16 max-w-3xl mx-auto w-full">
+          <div className="relative w-full h-[400px]">
             {/* Pollen - Large bubble */}
-            <div className={`absolute left-[80px] top-[100px] w-[200px] h-[200px] rounded-full bg-green-200 flex items-center justify-center text-black font-semibold`}>
+            <div className={`absolute left-[15%] top-[100px] w-[180px] h-[180px] rounded-full bg-green-200 flex items-center justify-center text-black font-semibold`}>
               Pollen
             </div>
             
             {/* Air Pollution - Large bubble */}
-            <div className={`absolute right-[80px] top-[100px] w-[180px] h-[180px] rounded-full bg-blue-300 flex items-center justify-center text-white font-semibold`}>
+            <div className={`absolute right-[15%] top-[100px] w-[160px] h-[160px] rounded-full bg-blue-300 flex items-center justify-center text-white font-semibold`}>
               Air Pollution
             </div>
             
@@ -222,12 +222,12 @@ const Dashboard = () => {
             </div>
             
             {/* Humidity - Small bubble */}
-            <div className={`absolute right-[150px] top-[30px] w-[100px] h-[100px] rounded-full bg-blue-400 flex items-center justify-center text-white font-semibold`}>
+            <div className={`absolute right-[25%] top-[30px] w-[100px] h-[100px] rounded-full bg-blue-400 flex items-center justify-center text-white font-semibold`}>
               Humidity
             </div>
             
             {/* Noise - Small bubble */}
-            <div className={`absolute left-[150px] top-[30px] w-[80px] h-[80px] rounded-full bg-green-100 flex items-center justify-center text-black font-semibold`}>
+            <div className={`absolute left-[25%] top-[30px] w-[80px] h-[80px] rounded-full bg-green-100 flex items-center justify-center text-black font-semibold`}>
               Noise
             </div>
           </div>
