@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChartBar, Cloud, Compass, Wind, MapPin, ThermometerSnowflake, ThermometerSun, CloudSun, CloudRain } from 'lucide-react';
+import { ChartBar, Cloud, Compass, Wind, MapPin, ThermometerSnowflake, ThermometerSun, CloudSun, CloudRain, Menu, X } from 'lucide-react';
 
 export const ChartBarIcon = (props: React.SVGProps<SVGSVGElement>) => <ChartBar {...props} />;
 export const CloudIcon = (props: React.SVGProps<SVGSVGElement>) => <Cloud {...props} />;
@@ -11,6 +11,8 @@ export const ColdIcon = (props: React.SVGProps<SVGSVGElement>) => <ThermometerSn
 export const HotIcon = (props: React.SVGProps<SVGSVGElement>) => <ThermometerSun {...props} />;
 export const SunnyIcon = (props: React.SVGProps<SVGSVGElement>) => <CloudSun {...props} />;
 export const RainyIcon = (props: React.SVGProps<SVGSVGElement>) => <CloudRain {...props} />;
+export const MenuIcon = (props: React.SVGProps<SVGSVGElement>) => <Menu {...props} />;
+export const XIcon = (props: React.SVGProps<SVGSVGElement>) => <X {...props} />;
 
 export const BrainIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
