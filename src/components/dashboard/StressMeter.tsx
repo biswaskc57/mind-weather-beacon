@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 interface StressMeterProps {
   value: number; // 0-100
   recentTrend: 'increasing' | 'decreasing' | 'stable';
+  compact?: boolean; // Added compact prop
 }
 
-const StressMeter: React.FC<StressMeterProps> = ({ value, recentTrend }) => {
+const StressMeter: React.FC<StressMeterProps> = ({ value, recentTrend, compact = false }) => {
   // Ensure the value is within 0-100 range
   const normalizedValue = Math.max(0, Math.min(100, value));
   
@@ -66,6 +67,38 @@ const StressMeter: React.FC<StressMeterProps> = ({ value, recentTrend }) => {
         return 'text-gray-500';
     }
   };
+  
+  if (compact) {
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-sm font-medium">Current Level: {getStressLabel()}</span>
+          <div className="flex items-center space-x-1">
+            {getTrendIcon()}
+            <span className={`text-sm ${getTrendClass()}`}>{getTrendText()}</span>
+          </div>
+        </div>
+        
+        <div className="relative pt-1">
+          <div className="overflow-hidden h-2 flex rounded stress-meter-gradient">
+            <div className="absolute top-0 right-0 h-full bg-black bg-opacity-30 rounded-r-full" style={{ width: `${100 - normalizedValue}%` }}></div>
+          </div>
+          <div className="relative h-0">
+            <div 
+              className="absolute bottom-0 w-3 h-3 rounded-full bg-white shadow-md border-2 border-mindsense-primary transform -translate-y-1" 
+              style={{ left: `calc(${percentage} - 6px)` }}
+            ></div>
+          </div>
+        </div>
+        
+        <div className="flex justify-between text-xs text-gray-500 pt-1">
+          <span>Low</span>
+          <span>Moderate</span>
+          <span>High</span>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <Card>
