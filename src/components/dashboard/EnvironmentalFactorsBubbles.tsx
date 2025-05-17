@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EnvironmentalFactor {
@@ -16,20 +16,20 @@ interface EnvironmentalFactorsBubblesProps {
 const EnvironmentalFactorsBubbles: React.FC<EnvironmentalFactorsBubblesProps> = ({ factors }) => {
   // Demo data for environmental factors
   const defaultData = [
-    { name: 'PM2.5 Levels', x: 20, y: 30, z: 300, fill: '#8884d8', impact: 'High' },
-    { name: 'PM10 Levels', x: 65, y: 20, z: 200, fill: '#82ca9d', impact: 'Medium' },
-    { name: 'UV Exposure', x: 40, y: 60, z: 250, fill: '#ffc658', impact: 'Medium-High' },
-    { name: 'Pollen Levels', x: 80, y: 70, z: 350, fill: '#ff8042', impact: 'Very High' },
-    { name: 'Temperature', x: 30, y: 50, z: 150, fill: '#0088FE', impact: 'Low' },
+    { name: 'PM2.5 Levels', x: 30, y: 40, z: 300, fill: '#8884d8', impact: 'High' },
+    { name: 'PM10 Levels', x: 80, y: 50, z: 200, fill: '#82ca9d', impact: 'Medium' },
+    { name: 'UV Exposure', x: 50, y: 80, z: 250, fill: '#ffc658', impact: 'Medium-High' },
+    { name: 'Pollen Levels', x: 120, y: 100, z: 350, fill: '#ff8042', impact: 'Very High' },
+    { name: 'Temperature', x: 70, y: 130, z: 150, fill: '#0088FE', impact: 'Low' },
   ];
 
   // If we have real factors, map them to chart data
   const chartData = factors && factors.length > 0 ? 
     factors.map((factor, index) => ({
       name: factor.name,
-      x: 20 + (index * 20) % 80, // Distribute x values
-      y: 30 + (index * 15) % 50, // Distribute y values
-      z: Math.abs(factor.impact) * 100, // Size based on impact
+      x: 40 + (index * 40), // Spread out x values more
+      y: 60 + (index * 30), // Spread out y values more
+      z: Math.abs(factor.impact) * 100 + 100, // Make bubbles larger
       fill: getColorByImpact(factor.impact),
       impact: getImpactLevel(factor.impact)
     })) : 
@@ -80,40 +80,40 @@ const EnvironmentalFactorsBubbles: React.FC<EnvironmentalFactorsBubblesProps> = 
             <ScatterChart
               margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
             >
-              <XAxis type="number" dataKey="x" name="x" tick={false} axisLine={false} />
-              <YAxis type="number" dataKey="y" name="y" tick={false} axisLine={false} />
-              <ZAxis 
-                type="number" 
-                dataKey="z" 
-                range={[50, 400]} 
-                name="impact"
-              />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
-              <Legend />
+              <XAxis type="number" dataKey="x" domain={[0, 160]} hide />
+              <YAxis type="number" dataKey="y" domain={[0, 160]} hide />
+              <ZAxis type="number" dataKey="z" range={[100, 400]} />
+              <Tooltip cursor={false} content={<CustomTooltip />} />
               <Scatter 
                 name="Environmental Factors" 
                 data={chartData} 
                 fill="#8884d8"
-                shape={(props) => {
-                  const { cx, cy, fill, r } = props;
-                  const name = props.payload.name;
-                  return (
-                    <g>
-                      <circle cx={cx} cy={cy} r={r} fill={fill} />
-                      <text 
-                        x={cx} 
-                        y={cy} 
-                        textAnchor="middle" 
-                        fill="#333" 
-                        dy={-15}
-                        fontSize={12}
-                      >
-                        {name}
-                      </text>
-                    </g>
-                  );
-                }}
-              />
+              >
+                {chartData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`}
+                    fill={entry.fill}
+                  />
+                ))}
+              </Scatter>
+              
+              {/* Add label layer on top of bubbles */}
+              {chartData.map((entry, index) => (
+                <g key={`label-${index}`}>
+                  <text 
+                    x={entry.x}
+                    y={entry.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fill="#333"
+                    fontSize={12}
+                    fontWeight="bold"
+                    className="select-none"
+                  >
+                    {entry.name}
+                  </text>
+                </g>
+              ))}
             </ScatterChart>
           </ResponsiveContainer>
         </div>

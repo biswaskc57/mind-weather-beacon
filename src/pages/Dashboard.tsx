@@ -6,7 +6,6 @@ import { useEnvironmentalData } from '@/hooks/use-environmental-data';
 import { useStressMeter } from '@/hooks/use-stress-meter';
 import WelcomeHeader from '@/components/dashboard/WelcomeHeader';
 import StressScoreCard from '@/components/dashboard/StressScoreCard';
-import SectionTitle from '@/components/dashboard/SectionTitle';
 import EnvironmentalFactorsBubbles from '@/components/dashboard/EnvironmentalFactorsBubbles';
 
 const Dashboard = () => {
@@ -31,6 +30,15 @@ const Dashboard = () => {
     return "not very stressed";
   };
 
+  // Create demo factors data if real data is unavailable
+  const demoFactors = [
+    { name: 'PM2.5 Levels', impact: 65, description: 'Current PM2.5 levels are high in your area' },
+    { name: 'PM10 Levels', impact: 45, description: 'Moderate PM10 levels may cause respiratory irritation' },
+    { name: 'UV Exposure', impact: 75, description: 'Very high UV index - avoid outdoor activities' },
+    { name: 'Pollen Levels', impact: 85, description: 'High pollen counts may worsen allergies and affect mood' },
+    { name: 'Temperature', impact: -25, description: 'Comfortable temperature range is beneficial for mental wellbeing' },
+  ];
+
   return (
     <MainLayout>
       <div className="max-w-4xl mx-auto py-6 px-4">
@@ -48,7 +56,7 @@ const Dashboard = () => {
         
         {/* Environmental Factors Section */}
         <EnvironmentalFactorsBubbles 
-          factors={stressData?.factors || []}
+          factors={stressData?.factors || demoFactors}
         />
       </div>
     </MainLayout>
