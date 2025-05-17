@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import EnvironmentPage from "./pages/EnvironmentPage";
 import LocationPage from "./pages/LocationPage";
 import StressPage from "./pages/StressPage";
+import ProfilePage from "./pages/ProfilePage";
+import TravelPlannerPage from "./pages/TravelPlannerPage";
 import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
@@ -79,6 +81,22 @@ const App = () => (
             element={
               <RequireOnboarding>
                 <StressPage />
+              </RequireOnboarding>
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              <RequireOnboarding>
+                <ProfilePage />
+              </RequireOnboarding>
+            } 
+          />
+          <Route 
+            path="/travel" 
+            element={
+              <RequireOnboarding>
+                <TravelPlannerPage />
               </RequireOnboarding>
             } 
           />

@@ -3,6 +3,7 @@ import React from 'react';
 import MainLayout from '@/components/layout/MainLayout';
 import EnvironmentalCard from '@/components/dashboard/EnvironmentalCard';
 import StressMeter from '@/components/dashboard/StressMeter';
+import PersonalMeters from '@/components/dashboard/PersonalMeters';
 import ChartCard from '@/components/dashboard/ChartCard';
 import InsightCard from '@/components/dashboard/InsightCard';
 import MindWeatherWidget from '@/components/dashboard/MindWeatherWidget';
@@ -96,6 +97,11 @@ const Dashboard = () => {
           status={environmentalData?.pollen.grass < 3 ? 'good' : 'moderate'}
           icon={<WindIcon />}
         />
+      </div>
+      
+      {/* Personal Health Meters */}
+      <div className="mb-4 md:mb-6">
+        <PersonalMeters />
       </div>
       
       {/* Main Content */}
