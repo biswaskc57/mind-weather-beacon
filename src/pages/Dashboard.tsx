@@ -17,6 +17,7 @@ const Dashboard = () => {
   };
 
   const [rawApiData, setRawApiData] = useState<any>(null);
+  const [rawPollenUvData, setRawPollenUvData] = useState<any>(null);
   
   const { location } = useLocation();
   const { data: environmentalData, refetch } = useEnvironmentalData({
@@ -31,13 +32,28 @@ const Dashboard = () => {
       try {
         const lat = location?.latitude || 60.17;
         const lon = location?.longitude || 24.94;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
         
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Failed to fetch raw API data');
+        // Fetch weather data
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
         
-        const data = await response.json();
-        setRawApiData(data);
+        // Fetch air quality, UV, and pollen data
+        const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index,allergens_grass_pollen`;
+        
+        // Parallel fetch for both APIs
+        const [weatherResponse, airQualityResponse] = await Promise.all([
+          fetch(weatherUrl),
+          fetch(airQualityUrl)
+        ]);
+        
+        if (!weatherResponse.ok || !airQualityResponse.ok) {
+          throw new Error('Failed to fetch raw API data');
+        }
+        
+        const weatherData = await weatherResponse.json();
+        const airQualityData = await airQualityResponse.json();
+        
+        setRawApiData(weatherData);
+        setRawPollenUvData(airQualityData);
       } catch (err) {
         console.error('Error fetching raw API data:', err);
       }
@@ -50,7 +66,8 @@ const Dashboard = () => {
   const airQualityHistory = generateAirQualityHistory(
     environmentalData?.airQuality.pm25,
     environmentalData?.airQuality.pm10,
-    rawApiData
+    rawApiData,
+    rawPollenUvData
   );
 
   return (

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 
@@ -40,8 +41,8 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
     setError(null);
     
     try {
-      // Fetch air quality data from Open-Meteo API
-      const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index`;
+      // Fetch air quality data from Open-Meteo API including UV index and pollen data
+      const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index,allergens_grass_pollen`;
       
       // Fetch weather data (temperature and humidity)
       const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
@@ -67,7 +68,10 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
       const airQualityCurrentIndex = airQualityData.hourly.time.length - 1;
       const weatherCurrentIndex = weatherData.hourly.time.length - 1;
       
-      // Extract the data we need
+      // Extract the data we need - including real UV and pollen data
+      const uvIndexValue = airQualityData.hourly.uv_index?.[airQualityCurrentIndex];
+      const grassPollenValue = airQualityData.hourly.allergens_grass_pollen?.[airQualityCurrentIndex];
+      
       const environmentalData: EnvironmentalData = {
         airQuality: {
           pm25: airQualityData.hourly.pm2_5[airQualityCurrentIndex] || 0,
@@ -77,10 +81,10 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
         weather: {
           temperature: weatherData.hourly.temperature_2m[weatherCurrentIndex] || 20,
           humidity: weatherData.hourly.relative_humidity_2m[weatherCurrentIndex] || 50,
-          uvIndex: airQualityData.hourly.uv_index?.[airQualityCurrentIndex] || Math.random() * 11,
+          uvIndex: uvIndexValue !== undefined ? uvIndexValue : Math.random() * 11, // Use real UV data if available
         },
         pollen: {
-          grass: Math.floor(Math.random() * 6), // Placeholder for grass pollen
+          grass: convertPollenToScale(grassPollenValue || 0), // Convert real grass pollen to 0-5 scale
           tree: Math.floor(Math.random() * 6), // Placeholder for tree pollen
           weed: Math.floor(Math.random() * 6), // Placeholder for weed pollen
         },
@@ -127,21 +131,22 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
     } else if (pm25 <= 35.4) {
       return Math.round(((pm25 - 12) / (35.4 - 12)) * 50 + 50);
     } else if (pm25 <= 55.4) {
-      return Math.round(((pm25 - 35.4) / (55.4 - 35.4)) * 50 + 100);
+      return Math.round(((pm25 - 55.4) / (55.4 - 35.4)) * 50 + 100);
     } else {
-      return Math.round(((pm25 - 55.4) / (150.4 - 55.4)) * 50 + 150);
+      return Math.round(((pm25 - 150.4) / (150.4 - 55.4)) * 50 + 150);
     }
   };
   
   // Convert pollen concentration to 0-5 scale
   const convertPollenToScale = (pollenValue: number) => {
-    // Typical grass pollen concentrations: 0-15 (low), 16-50 (moderate), 51-500 (high)
-    if (pollenValue < 5) return 0;
-    if (pollenValue < 15) return 1;
-    if (pollenValue < 30) return 2;
-    if (pollenValue < 50) return 3;
-    if (pollenValue < 100) return 4;
-    return 5;
+    // Scale for grass pollen concentrations (grains/m³)
+    // Using standard ranges for pollen count classification
+    if (pollenValue < 1) return 0; // None
+    if (pollenValue < 5) return 1; // Very low
+    if (pollenValue < 10) return 2; // Low
+    if (pollenValue < 50) return 3; // Moderate
+    if (pollenValue < 100) return 4; // High
+    return 5; // Very high
   };
   
   // Fetch data when coordinates change
