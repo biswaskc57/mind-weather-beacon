@@ -27,6 +27,8 @@ const Dashboard = () => {
   });
   const { stressData } = useStressMeter({ environmentalData });
 
+  console.log(stressData);
+
   // Generate air quality history data
   const airQualityHistory = generateAirQualityHistory(
     environmentalData?.airQuality.pm25,
