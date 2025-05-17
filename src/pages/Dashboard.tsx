@@ -4,8 +4,9 @@ import MainLayout from '@/components/layout/MainLayout';
 import { useLocation } from '@/hooks/use-location';
 import { useEnvironmentalData } from '@/hooks/use-environmental-data';
 import { useStressMeter } from '@/hooks/use-stress-meter';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 
 const Dashboard = () => {
   // User data - in a real app, this would come from a user context or API
@@ -20,12 +21,6 @@ const Dashboard = () => {
     longitude: location?.longitude
   });
   const { stressData } = useStressMeter({ environmentalData });
-
-  // Data for stress pie chart with updated colors
-  const stressChartData = [
-    { name: 'Personal Stress', value: 66.7, color: '#10B981' }, // Green color
-    { name: 'External causes', value: 33.3, color: '#0EA5E9' }, // Blue color
-  ];
 
   // Functions to calculate bubble sizes for environmental factors
   const getBubbleSize = (factor) => {
@@ -56,6 +51,16 @@ const Dashboard = () => {
     if (stressData.score > 30) return "a little stressed";
     return "not very stressed";
   };
+  
+  // Stress level categories
+  const getStressCategory = (score: number) => {
+    if (score < 30) return { label: 'Low', color: 'bg-green-500' };
+    if (score < 60) return { label: 'Moderate', color: 'bg-yellow-500' };
+    if (score < 80) return { label: 'High', color: 'bg-orange-500' };
+    return { label: 'Very High', color: 'bg-red-500' };
+  };
+  
+  const stressCategory = getStressCategory(stressData?.score || 50);
 
   return (
     <MainLayout>
@@ -85,30 +90,108 @@ const Dashboard = () => {
           </p>
         </div>
         
-        {/* Stress Analysis Chart with updated colors */}
-        <div className="mb-16">
-          <div className="flex justify-center h-[300px]">
-            <ResponsiveContainer width="100%" height="100%" className="max-w-[400px]">
-              <PieChart>
-                <Pie
-                  data={stressChartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={0}
-                  dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
-                  labelLine={false}
-                >
-                  {stressChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        {/* Stress Score Card - imported from StressPage */}
+        <Card className="mb-16">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {/* Circular Score Display */}
+              <div className="relative w-48 h-48">
+                <svg className="w-full h-full" viewBox="0 0 100 100">
+                  {/* Background circle */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke="#e5e7eb"
+                    strokeWidth="10"
+                  />
+                  {/* Progress circle */}
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="45"
+                    fill="none"
+                    stroke={stressData?.score && stressData.score < 30 ? "#10B981" : 
+                           stressData?.score && stressData.score < 60 ? "#F59E0B" : 
+                           stressData?.score && stressData.score < 80 ? "#F97316" : "#EF4444"}
+                    strokeWidth="10"
+                    strokeDasharray="283"
+                    strokeDashoffset={283 - ((stressData?.score || 50) / 100) * 283}
+                    transform="rotate(-90 50 50)"
+                  />
+                  <text
+                    x="50"
+                    y="50"
+                    fontSize="22"
+                    fontWeight="bold"
+                    textAnchor="middle"
+                    alignmentBaseline="central"
+                  >
+                    {stressData?.score?.toFixed(0) || "50"}
+                  </text>
+                  <text
+                    x="50"
+                    y="65"
+                    fontSize="12"
+                    textAnchor="middle"
+                    alignmentBaseline="central"
+                    fill="#6B7280"
+                  >
+                    out of 100
+                  </text>
+                </svg>
+              </div>
+              
+              {/* Status and Info */}
+              <div className="flex-1 space-y-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${stressCategory.color}`}></div>
+                    <span className="font-medium text-lg">{stressCategory.label} Stress Level</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {stressCategory.label === 'Low' && 'Your environmental stress level is low today. Great conditions for mental wellbeing.'}
+                    {stressCategory.label === 'Moderate' && 'Moderate stress factors detected in your environment. Take breaks when needed.'}
+                    {stressCategory.label === 'High' && 'High environmental stress detected. Consider activities to reduce mental strain.'}
+                    {stressCategory.label === 'Very High' && 'Very high environmental stress. Take precautions and prioritize self-care.'}
+                  </p>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  {stressData?.trend === 'increasing' && (
+                    <div className="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center">
+                      <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="12" y1="19" x2="12" y2="5" />
+                        <polyline points="5 12 12 5 19 12" />
+                      </svg>
+                      Increasing
+                    </div>
+                  )}
+                  {stressData?.trend === 'decreasing' && (
+                    <div className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center">
+                      <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <polyline points="19 12 12 19 5 12" />
+                      </svg>
+                      Decreasing
+                    </div>
+                  )}
+                  {stressData?.trend === 'stable' && (
+                    <div className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center">
+                      <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      Stable
+                    </div>
+                  )}
+                </div>
+                
+                <Button variant="outline" size="sm">View Detailed Report</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
         
         {/* Environmental Factors Title - Updated to match style from other pages */}
         <div className="text-center mb-8">
