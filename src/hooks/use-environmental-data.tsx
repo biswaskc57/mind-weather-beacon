@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 
@@ -42,39 +41,48 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
     
     try {
       // Fetch air quality data from Open-Meteo API
-      const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index,allergens_grass_pollen`;
+      const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index`;
       
-      const response = await fetch(url);
+      // Fetch weather data (temperature and humidity)
+      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
       
-      if (!response.ok) {
+      // Parallel fetch for both APIs
+      const [airQualityResponse, weatherResponse] = await Promise.all([
+        fetch(airQualityUrl),
+        fetch(weatherUrl)
+      ]);
+      
+      if (!airQualityResponse.ok || !weatherResponse.ok) {
         throw new Error('Failed to fetch environmental data from API');
       }
       
-      const apiData = await response.json();
+      const airQualityData = await airQualityResponse.json();
+      const weatherData = await weatherResponse.json();
       
-      if (!apiData.hourly) {
+      if (!airQualityData.hourly || !weatherData.hourly) {
         throw new Error('Invalid data format received from API');
       }
       
       // Get current index (latest available data)
-      const currentIndex = apiData.hourly.time.length - 1;
+      const airQualityCurrentIndex = airQualityData.hourly.time.length - 1;
+      const weatherCurrentIndex = weatherData.hourly.time.length - 1;
       
       // Extract the data we need
       const environmentalData: EnvironmentalData = {
         airQuality: {
-          pm25: apiData.hourly.pm2_5[currentIndex] || 0,
-          pm10: apiData.hourly.pm10[currentIndex] || 0,
-          aqi: calculateAQI(apiData.hourly.pm2_5[currentIndex], apiData.hourly.pm10[currentIndex]),
+          pm25: airQualityData.hourly.pm2_5[airQualityCurrentIndex] || 0,
+          pm10: airQualityData.hourly.pm10[airQualityCurrentIndex] || 0,
+          aqi: calculateAQI(airQualityData.hourly.pm2_5[airQualityCurrentIndex], airQualityData.hourly.pm10[airQualityCurrentIndex]),
         },
         weather: {
-          temperature: 20 + Math.random() * 5, // Placeholder as the air quality API doesn't provide temperature
-          humidity: 40 + Math.random() * 30, // Placeholder
-          uvIndex: apiData.hourly.uv_index?.[currentIndex] || Math.random() * 11,
+          temperature: weatherData.hourly.temperature_2m[weatherCurrentIndex] || 20,
+          humidity: weatherData.hourly.relative_humidity_2m[weatherCurrentIndex] || 50,
+          uvIndex: airQualityData.hourly.uv_index?.[airQualityCurrentIndex] || Math.random() * 11,
         },
         pollen: {
-          grass: convertPollenToScale(apiData.hourly.allergens_grass_pollen?.[currentIndex] || 0),
-          tree: Math.floor(Math.random() * 6), // Placeholder as API doesn't provide tree pollen
-          weed: Math.floor(Math.random() * 6), // Placeholder as API doesn't provide weed pollen
+          grass: Math.floor(Math.random() * 6), // Placeholder for grass pollen
+          tree: Math.floor(Math.random() * 6), // Placeholder for tree pollen
+          weed: Math.floor(Math.random() * 6), // Placeholder for weed pollen
         },
         timestamp: Date.now(),
       };

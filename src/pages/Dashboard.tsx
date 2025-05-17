@@ -31,7 +31,7 @@ const Dashboard = () => {
       try {
         const lat = location?.latitude || 60.17;
         const lon = location?.longitude || 24.94;
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=60.17&longitude=24.94&hourly=temperature_2m,relative_humidity_2m`;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
         
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch raw API data');
