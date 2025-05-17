@@ -34,7 +34,7 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ firstName, stressLevel })
       <Card className="max-w-3xl mx-auto mb-16 text-center">
         <CardContent className="py-6">
           <p className="text-xl font-medium text-muted-foreground mb-2">
-            I can see that today you seem quite stressed.
+            I can see that today you seem {stressLevel}.
           </p>
           <p className="text-xl font-medium text-mindsense-primary">
             I can help you!
