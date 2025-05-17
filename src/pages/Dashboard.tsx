@@ -17,7 +17,7 @@ const Dashboard = () => {
   };
 
   const [rawApiData, setRawApiData] = useState<any>(null);
-  const [rawPollenUvData, setRawPollenUvData] = useState<any>(null);
+  const [rawAirQualityData, setRawAirQualityData] = useState<any>(null);
   
   const { location } = useLocation();
   const { data: environmentalData, refetch } = useEnvironmentalData({
@@ -36,8 +36,8 @@ const Dashboard = () => {
         // Fetch weather data
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
         
-        // Fetch air quality, UV, and pollen data
-        const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index,allergens_grass_pollen`;
+        // Fetch air quality and UV data (removed pollen as it's not supported)
+        const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index`;
         
         // Parallel fetch for both APIs
         const [weatherResponse, airQualityResponse] = await Promise.all([
@@ -53,7 +53,7 @@ const Dashboard = () => {
         const airQualityData = await airQualityResponse.json();
         
         setRawApiData(weatherData);
-        setRawPollenUvData(airQualityData);
+        setRawAirQualityData(airQualityData);
       } catch (err) {
         console.error('Error fetching raw API data:', err);
       }
@@ -67,7 +67,7 @@ const Dashboard = () => {
     environmentalData?.airQuality.pm25,
     environmentalData?.airQuality.pm10,
     rawApiData,
-    rawPollenUvData
+    rawAirQualityData
   );
 
   return (

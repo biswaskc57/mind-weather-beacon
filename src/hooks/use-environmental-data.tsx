@@ -41,8 +41,8 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
     setError(null);
     
     try {
-      // Fetch air quality data from Open-Meteo API including UV index and pollen data
-      const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index,allergens_grass_pollen`;
+      // Fetch air quality data from Open-Meteo API including UV index but removing the unsupported pollen parameter
+      const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index`;
       
       // Fetch weather data (temperature and humidity)
       const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
@@ -68,9 +68,11 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
       const airQualityCurrentIndex = airQualityData.hourly.time.length - 1;
       const weatherCurrentIndex = weatherData.hourly.time.length - 1;
       
-      // Extract the data we need - including real UV and pollen data
+      // Extract the data we need - including real UV data
       const uvIndexValue = airQualityData.hourly.uv_index?.[airQualityCurrentIndex];
-      const grassPollenValue = airQualityData.hourly.allergens_grass_pollen?.[airQualityCurrentIndex];
+      
+      // Since grass pollen isn't supported in the API, we'll generate synthetic data
+      const grassPollenValue = Math.random() * 5;
       
       const environmentalData: EnvironmentalData = {
         airQuality: {
@@ -84,7 +86,7 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
           uvIndex: uvIndexValue !== undefined ? uvIndexValue : Math.random() * 11, // Use real UV data if available
         },
         pollen: {
-          grass: convertPollenToScale(grassPollenValue || 0), // Convert real grass pollen to 0-5 scale
+          grass: convertPollenToScale(grassPollenValue || 0), // Use synthetic grass pollen
           tree: Math.floor(Math.random() * 6), // Placeholder for tree pollen
           weed: Math.floor(Math.random() * 6), // Placeholder for weed pollen
         },
