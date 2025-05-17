@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useLocation } from '@/hooks/use-location';
 import { useEnvironmentalData } from '@/hooks/use-environmental-data';
 import { useStressMeter } from '@/hooks/use-stress-meter';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { CloudIcon, MapPinIcon, WindIcon, ColdIcon, HotIcon, SunnyIcon, RainyIcon } from '@/components/icons/Icons';
 
 const Dashboard = () => {
@@ -19,6 +20,7 @@ const Dashboard = () => {
     longitude: location?.longitude
   });
   const { stressData } = useStressMeter({ environmentalData });
+  const isMobile = useIsMobile();
   
   // Mock data for charts - ensuring all values are numbers
   const pm25ChartData = [
@@ -58,15 +60,15 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Your environmental health at a glance</p>
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold">Dashboard</h1>
+        <p className="text-sm md:text-base text-muted-foreground">Your environmental health at a glance</p>
       </div>
       
       {/* Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
         <EnvironmentalCard
-          title="Air Quality (PM2.5)"
+          title="Air Quality"
           value={environmentalData ? environmentalData.airQuality.pm25.toFixed(1) : '−−'}
           unit="μg/m³"
           status={environmentalData?.airQuality.pm25 < 12 ? 'good' : environmentalData?.airQuality.pm25 < 35 ? 'moderate' : 'poor'}
@@ -88,7 +90,7 @@ const Dashboard = () => {
           icon={<SunnyIcon />}
         />
         <EnvironmentalCard
-          title="Pollen Level"
+          title="Pollen"
           value={environmentalData ? ((environmentalData.pollen.grass + environmentalData.pollen.tree + environmentalData.pollen.weed) / 3).toFixed(1) : '−−'}
           unit="/5"
           status={environmentalData?.pollen.grass < 3 ? 'good' : 'moderate'}
@@ -97,8 +99,8 @@ const Dashboard = () => {
       </div>
       
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="lg:col-span-2 space-y-4 md:space-y-6">
           <StressMeter 
             value={stressData?.score || 50} 
             recentTrend={stressData?.trend || 'stable'} 
@@ -129,7 +131,7 @@ const Dashboard = () => {
           </div>
         </div>
         
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
           <MindWeatherWidget forecasts={forecastData} />
           
           <div className="bg-white rounded-lg p-4 border border-gray-200">
@@ -146,13 +148,15 @@ const Dashboard = () => {
             )}
           </div>
           
-          <div className="bg-white rounded-lg p-4 border border-gray-200">
-            <h3 className="font-medium mb-2">Daily Tip</h3>
-            <p className="text-sm text-gray-600 mb-3">
-              Spending time in nature has been shown to reduce stress and improve mood, even in urban environments.
-            </p>
-            <Button variant="link" className="p-0 h-auto">Learn more</Button>
-          </div>
+          {!isMobile && (
+            <div className="bg-white rounded-lg p-4 border border-gray-200">
+              <h3 className="font-medium mb-2">Daily Tip</h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Spending time in nature has been shown to reduce stress and improve mood, even in urban environments.
+              </p>
+              <Button variant="link" className="p-0 h-auto">Learn more</Button>
+            </div>
+          )}
         </div>
       </div>
     </MainLayout>
