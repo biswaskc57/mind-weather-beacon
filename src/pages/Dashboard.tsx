@@ -15,59 +15,24 @@ const Dashboard = () => {
     firstName: 'Anastasia',
     lastName: 'Morgan',
   };
-
-  const [rawApiData, setRawApiData] = useState<any>(null);
-  const [rawAirQualityData, setRawAirQualityData] = useState<any>(null);
   
   const { location } = useLocation();
-  const { data: environmentalData, refetch } = useEnvironmentalData({
+  const { 
+    data: environmentalData, 
+    refetch,
+    rawData 
+  } = useEnvironmentalData({
     latitude: location?.latitude,
     longitude: location?.longitude
   });
   const { stressData } = useStressMeter({ environmentalData });
 
-  // Fetch raw API data for charts
-  useEffect(() => {
-    const fetchRawData = async () => {
-      try {
-        const lat = location?.latitude || 60.17;
-        const lon = location?.longitude || 24.94;
-        
-        // Fetch weather data
-        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
-        
-        // Fetch air quality and UV data (removed pollen as it's not supported)
-        const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index`;
-        
-        // Parallel fetch for both APIs
-        const [weatherResponse, airQualityResponse] = await Promise.all([
-          fetch(weatherUrl),
-          fetch(airQualityUrl)
-        ]);
-        
-        if (!weatherResponse.ok || !airQualityResponse.ok) {
-          throw new Error('Failed to fetch raw API data');
-        }
-        
-        const weatherData = await weatherResponse.json();
-        const airQualityData = await airQualityResponse.json();
-        
-        setRawApiData(weatherData);
-        setRawAirQualityData(airQualityData);
-      } catch (err) {
-        console.error('Error fetching raw API data:', err);
-      }
-    };
-    
-    fetchRawData();
-  }, [location]);
-
   // Generate air quality history data
   const airQualityHistory = generateAirQualityHistory(
     environmentalData?.airQuality.pm25,
     environmentalData?.airQuality.pm10,
-    rawApiData,
-    rawAirQualityData
+    rawData.weather,
+    rawData.airQuality
   );
 
   return (

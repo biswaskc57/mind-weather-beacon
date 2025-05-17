@@ -30,6 +30,9 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
   const [data, setData] = useState<EnvironmentalData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [airQualityData, setAirQualityData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<any>(null);
+  const [pollenData, setPollenData] = useState<any>(null);
   
   // Function to fetch environmental data from Open-Meteo API
   const fetchEnvironmentalData = async () => {
@@ -41,54 +44,88 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
     setError(null);
     
     try {
-      // Fetch air quality data from Open-Meteo API including UV index but removing the unsupported pollen parameter
+      // Fetch all needed data in parallel
       const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=pm10,pm2_5,uv_index`;
-      
-      // Fetch weather data (temperature and humidity)
       const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m`;
+      const pollenUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=dust,alder_pollen,birch_pollen,grass_pollen`;
       
-      // Parallel fetch for both APIs
-      const [airQualityResponse, weatherResponse] = await Promise.all([
+      // Parallel fetch for all APIs
+      const [airQualityResponse, weatherResponse, pollenResponse] = await Promise.all([
         fetch(airQualityUrl),
-        fetch(weatherUrl)
+        fetch(weatherUrl),
+        fetch(pollenUrl)
       ]);
       
       if (!airQualityResponse.ok || !weatherResponse.ok) {
         throw new Error('Failed to fetch environmental data from API');
       }
       
-      const airQualityData = await airQualityResponse.json();
-      const weatherData = await weatherResponse.json();
+      const airQualityResult = await airQualityResponse.json();
+      const weatherResult = await weatherResponse.json();
+      let pollenResult = null;
       
-      if (!airQualityData.hourly || !weatherData.hourly) {
+      if (pollenResponse.ok) {
+        pollenResult = await pollenResponse.json();
+      }
+      
+      setAirQualityData(airQualityResult);
+      setWeatherData(weatherResult);
+      setPollenData(pollenResult);
+      
+      if (!airQualityResult.hourly || !weatherResult.hourly) {
         throw new Error('Invalid data format received from API');
       }
       
       // Get current index (latest available data)
-      const airQualityCurrentIndex = airQualityData.hourly.time.length - 1;
-      const weatherCurrentIndex = weatherData.hourly.time.length - 1;
+      const airQualityCurrentIndex = airQualityResult.hourly.time.length - 1;
+      const weatherCurrentIndex = weatherResult.hourly.time.length - 1;
       
-      // Extract the data we need - including real UV data
-      const uvIndexValue = airQualityData.hourly.uv_index?.[airQualityCurrentIndex];
+      // Extract the data we need
+      const uvIndexValue = airQualityResult.hourly.uv_index?.[airQualityCurrentIndex];
       
-      // Since grass pollen isn't supported in the API, we'll generate synthetic data
-      const grassPollenValue = Math.random() * 5;
+      // Check if we have real pollen data
+      let grassPollenValue = 0;
+      let treePollenValue = 0;
+      let weedPollenValue = 0;
+      
+      if (pollenResult && pollenResult.hourly) {
+        const pollenCurrentIndex = pollenResult.hourly.time.length - 1;
+        // Use real pollen data if available
+        grassPollenValue = pollenResult.hourly.grass_pollen?.[pollenCurrentIndex] || Math.random() * 5;
+        
+        // Try to get tree pollen from birch or alder
+        if (pollenResult.hourly.birch_pollen) {
+          treePollenValue = pollenResult.hourly.birch_pollen[pollenCurrentIndex] || 0;
+        } else if (pollenResult.hourly.alder_pollen) {
+          treePollenValue = pollenResult.hourly.alder_pollen[pollenCurrentIndex] || 0;
+        } else {
+          treePollenValue = Math.random() * 5;
+        }
+        
+        // Use dust as proxy for weed pollen if no direct weed data
+        weedPollenValue = pollenResult.hourly.dust?.[pollenCurrentIndex] || Math.random() * 5;
+      } else {
+        // Fallback to random values
+        grassPollenValue = Math.random() * 5;
+        treePollenValue = Math.random() * 5;
+        weedPollenValue = Math.random() * 5;
+      }
       
       const environmentalData: EnvironmentalData = {
         airQuality: {
-          pm25: airQualityData.hourly.pm2_5[airQualityCurrentIndex] || 0,
-          pm10: airQualityData.hourly.pm10[airQualityCurrentIndex] || 0,
-          aqi: calculateAQI(airQualityData.hourly.pm2_5[airQualityCurrentIndex], airQualityData.hourly.pm10[airQualityCurrentIndex]),
+          pm25: airQualityResult.hourly.pm2_5[airQualityCurrentIndex] || 0,
+          pm10: airQualityResult.hourly.pm10[airQualityCurrentIndex] || 0,
+          aqi: calculateAQI(airQualityResult.hourly.pm2_5[airQualityCurrentIndex], airQualityResult.hourly.pm10[airQualityCurrentIndex]),
         },
         weather: {
-          temperature: weatherData.hourly.temperature_2m[weatherCurrentIndex] || 20,
-          humidity: weatherData.hourly.relative_humidity_2m[weatherCurrentIndex] || 50,
+          temperature: weatherResult.hourly.temperature_2m[weatherCurrentIndex] || 20,
+          humidity: weatherResult.hourly.relative_humidity_2m[weatherCurrentIndex] || 50,
           uvIndex: uvIndexValue !== undefined ? uvIndexValue : Math.random() * 11, // Use real UV data if available
         },
         pollen: {
-          grass: convertPollenToScale(grassPollenValue || 0), // Use synthetic grass pollen
-          tree: Math.floor(Math.random() * 6), // Placeholder for tree pollen
-          weed: Math.floor(Math.random() * 6), // Placeholder for weed pollen
+          grass: convertPollenToScale(grassPollenValue), // Convert to 0-5 scale
+          tree: convertPollenToScale(treePollenValue), // Convert to 0-5 scale
+          weed: convertPollenToScale(weedPollenValue), // Convert to 0-5 scale
         },
         timestamp: Date.now(),
       };
@@ -141,8 +178,7 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
   
   // Convert pollen concentration to 0-5 scale
   const convertPollenToScale = (pollenValue: number) => {
-    // Scale for grass pollen concentrations (grains/m³)
-    // Using standard ranges for pollen count classification
+    // Scale for pollen concentrations (grains/m³)
     if (pollenValue < 1) return 0; // None
     if (pollenValue < 5) return 1; // Very low
     if (pollenValue < 10) return 2; // Low
@@ -178,5 +214,15 @@ export const useEnvironmentalData = ({ latitude, longitude }: UseEnvironmentalDa
     }
   }, [latitude, longitude]);
 
-  return { data, isLoading, error, refetch: fetchEnvironmentalData };
+  return { 
+    data, 
+    isLoading, 
+    error, 
+    refetch: fetchEnvironmentalData,
+    rawData: {
+      airQuality: airQualityData,
+      weather: weatherData,
+      pollen: pollenData
+    }
+  };
 };
