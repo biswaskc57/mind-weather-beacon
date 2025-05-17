@@ -46,13 +46,7 @@ const Dashboard = () => {
           trend={stressData?.trend}
         />
         
-        {/* Environmental Factors Title */}
-        <SectionTitle 
-          title="Environmental Factors"
-          description="These external factors can influence your stress level"
-        />
-        
-        {/* Environmental Factors Bubbles */}
+        {/* Environmental Factors Section */}
         <EnvironmentalFactorsBubbles 
           factors={stressData?.factors || []}
         />
