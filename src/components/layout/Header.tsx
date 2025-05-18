@@ -13,6 +13,7 @@ const Header = () => {
           src="/lovable-uploads/0c1c2ced-7d48-4e89-a842-a3d260f82a29.png" 
           alt="Calmos Logo" 
           className="h-8 w-8"
+          style={{width:"110%"}}
         />
         <span className="text-xl font-bold bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-transparent bg-clip-text">
           Calmos
