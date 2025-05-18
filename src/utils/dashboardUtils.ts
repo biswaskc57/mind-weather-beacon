@@ -10,7 +10,7 @@ export const getStressLevel = (score?: number): string => {
 };
 
 // Generate air quality history from real data if available, otherwise use mock data
-export const generateAirQualityHistory = (currentPm25?: number, currentPm10?: number, apiData?: any, airQualityData?: any) => {
+export const generateAirQualityHistory = (currentPm25?: number | null, currentPm10?: number | null, apiData?: any, airQualityData?: any) => {
   // Check if we have weather data from the forecast API
   if (apiData && apiData.hourly && apiData.hourly.time) {
     // Use actual API data if available
@@ -19,7 +19,8 @@ export const generateAirQualityHistory = (currentPm25?: number, currentPm10?: nu
     const dataLength = apiData.hourly.time.length;
     
     // If we have air quality history, use it
-    const hasAirQualityHistory = airQualityData && airQualityData.hourly && airQualityData.hourly.pm2_5 && airQualityData.hourly.pm10;
+    const hasAirQualityHistory = airQualityData && airQualityData.hourly && 
+      airQualityData.hourly.pm2_5 && airQualityData.hourly.pm10;
     
     for (let i = 0; i < 5; i++) {
       // Calculate index for evenly spaced points
@@ -45,8 +46,8 @@ export const generateAirQualityHistory = (currentPm25?: number, currentPm10?: nu
       
       dataPoints.push({
         name: i === 4 ? 'Current' : timeString,
-        pm25: Number(pm25Value?.toFixed(1)) || 0,
-        pm10: Number(pm10Value?.toFixed(1)) || 0
+        pm25: Number((pm25Value || 0).toFixed(1)),
+        pm10: Number((pm10Value || 0).toFixed(1))
       });
     }
     

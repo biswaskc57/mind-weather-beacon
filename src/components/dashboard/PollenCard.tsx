@@ -28,6 +28,7 @@ const getPollenLevelColor = (level: number) => {
 };
 
 const PollenCard: React.FC<PollenCardProps> = ({ pollen }) => {
+  // Calculate average only if pollen data exists
   const averageLevel = pollen ? 
     ((pollen.grass + pollen.tree + pollen.weed) / 3).toFixed(1) : 
     "0.0";

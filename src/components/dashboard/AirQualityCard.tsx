@@ -41,11 +41,11 @@ const AirQualityCard: React.FC<AirQualityCardProps> = ({ airQuality }) => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">PM2.5</span>
-                <span>{airQuality.pm25.toFixed(1)} μg/m³</span>
+                <span>{airQuality.pm25?.toFixed(1) || '0.0'} μg/m³</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">PM10</span>
-                <span>{airQuality.pm10.toFixed(1)} μg/m³</span>
+                <span>{airQuality.pm10?.toFixed(1) || '0.0'} μg/m³</span>
               </div>
             </div>
           </div>

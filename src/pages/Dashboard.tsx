@@ -27,14 +27,12 @@ const Dashboard = () => {
   });
   const { stressData } = useStressMeter({ environmentalData });
 
-  console.log(stressData);
-
-  // Generate air quality history data
+  // Generate air quality history data safely with null checks
   const airQualityHistory = generateAirQualityHistory(
-    environmentalData?.airQuality.pm25,
-    environmentalData?.airQuality.pm10,
-    rawData.weather,
-    rawData.airQuality
+    environmentalData?.airQuality?.pm25 || null,
+    environmentalData?.airQuality?.pm10 || null,
+    rawData?.weather || null,
+    rawData?.airQuality || null
   );
 
   return (
@@ -55,7 +53,7 @@ const Dashboard = () => {
         {/* Environmental Data Section */}
         <EnvironmentalDataSection
           environmentalData={environmentalData}
-          airQualityHistory={airQualityHistory}
+          airQualityHistory={airQualityHistory || []}
           refetchData={refetch}
         />
       </div>
