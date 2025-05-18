@@ -23,7 +23,7 @@ const ChatbotWidget: React.FC = () => {
   return (
     <Card className={`fixed bottom-4 right-4 overflow-hidden shadow-lg transition-all duration-300 z-50 ${isMinimized ? 'w-64 h-12' : 'w-[380px] h-[600px]'}`}>
       <div className="bg-mindsense-primary text-white p-2 flex justify-between items-center cursor-pointer" onClick={() => setIsMinimized(!isMinimized)}>
-        <span className="text-sm font-medium">Environmental Health Assistant</span>
+        <span className="text-sm font-medium">Stress Manager</span>
         <div className="flex items-center gap-1">
           {isMinimized ? (
             <Maximize className="w-4 h-4" />
@@ -46,7 +46,7 @@ const ChatbotWidget: React.FC = () => {
             width="100%"
             style={{ height: '562px' }}
             frameBorder="0"
-            title="Environmental Health Assistant"
+            title="Stress Manager"
           />
         </CardContent>
       )}
