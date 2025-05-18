@@ -23,6 +23,9 @@ const MetricsPage = () => {
   const { stressData } = useStressMeter({ environmentalData });
   const isMobile = useIsMobile();
   
+  // Make sure we have safe default values for PM2.5 data
+  const currentPm25Value = environmentalData?.airQuality?.pm25 || 15;
+  
   // Mock data for charts - ensuring all values are numbers
   const pm25ChartData = [
     { name: 'Mon', value: 15 },
@@ -31,7 +34,7 @@ const MetricsPage = () => {
     { name: 'Thu', value: 19 },
     { name: 'Fri', value: 16 },
     { name: 'Sat', value: 14 },
-    { name: 'Sun', value: environmentalData ? Number(environmentalData.airQuality.pm25.toFixed(1)) : 15 },
+    { name: 'Sun', value: Number(currentPm25Value.toFixed(1)) },
   ];
   
   // Mock forecast data
@@ -59,6 +62,22 @@ const MetricsPage = () => {
     },
   ];
 
+  // Safe access to environmental data with fallbacks
+  const getAirQualityValue = (value: number | undefined, defaultValue: number): number => {
+    return typeof value === 'number' ? value : defaultValue;
+  };
+
+  const getWeatherValue = (value: number | undefined, defaultValue: number): number => {
+    return typeof value === 'number' ? value : defaultValue;
+  };
+
+  const getPollenAverage = (): number => {
+    if (!environmentalData?.pollen) return 0;
+    const { grass, tree, weed } = environmentalData.pollen;
+    if (typeof grass !== 'number' || typeof tree !== 'number' || typeof weed !== 'number') return 0;
+    return (grass + tree + weed) / 3;
+  };
+
   return (
     <MainLayout>
       <div className="mb-4 md:mb-6">
@@ -70,31 +89,31 @@ const MetricsPage = () => {
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
         <EnvironmentalCard
           title="Air Quality"
-          value={environmentalData ? environmentalData.airQuality.pm25.toFixed(1) : '−−'}
+          value={getAirQualityValue(environmentalData?.airQuality?.pm25, 0).toFixed(1)}
           unit="μg/m³"
-          status={environmentalData?.airQuality.pm25 < 12 ? 'good' : environmentalData?.airQuality.pm25 < 35 ? 'moderate' : 'poor'}
+          status={getAirQualityValue(environmentalData?.airQuality?.pm25, 0) < 12 ? 'good' : getAirQualityValue(environmentalData?.airQuality?.pm25, 0) < 35 ? 'moderate' : 'poor'}
           icon={<CloudIcon />}
           change="↑ 12% from yesterday"
         />
         <EnvironmentalCard
           title="Temperature"
-          value={environmentalData ? environmentalData.weather.temperature.toFixed(1) : '−−'}
+          value={getWeatherValue(environmentalData?.weather?.temperature, 0).toFixed(1)}
           unit="°C"
-          status={environmentalData?.weather.temperature < 30 ? 'good' : 'moderate'}
-          icon={environmentalData?.weather.temperature > 25 ? <HotIcon /> : <ColdIcon />}
+          status={getWeatherValue(environmentalData?.weather?.temperature, 0) < 30 ? 'good' : 'moderate'}
+          icon={getWeatherValue(environmentalData?.weather?.temperature, 0) > 25 ? <HotIcon /> : <ColdIcon />}
         />
         <EnvironmentalCard
           title="UV Index"
-          value={environmentalData ? environmentalData.weather.uvIndex.toFixed(1) : '−−'}
+          value={getWeatherValue(environmentalData?.weather?.uvIndex, 0).toFixed(1)}
           unit=""
-          status={environmentalData?.weather.uvIndex < 3 ? 'good' : environmentalData?.weather.uvIndex < 6 ? 'moderate' : 'poor'}
+          status={getWeatherValue(environmentalData?.weather?.uvIndex, 0) < 3 ? 'good' : getWeatherValue(environmentalData?.weather?.uvIndex, 0) < 6 ? 'moderate' : 'poor'}
           icon={<SunnyIcon />}
         />
         <EnvironmentalCard
           title="Pollen"
-          value={environmentalData ? ((environmentalData.pollen.grass + environmentalData.pollen.tree + environmentalData.pollen.weed) / 3).toFixed(1) : '−−'}
+          value={getPollenAverage().toFixed(1)}
           unit="/5"
-          status={environmentalData?.pollen.grass < 3 ? 'good' : 'moderate'}
+          status={getPollenAverage() < 3 ? 'good' : 'moderate'}
           icon={<WindIcon />}
         />
       </div>
@@ -124,15 +143,15 @@ const MetricsPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InsightCard
               title="Air Quality Alert"
-              description={`Current PM2.5 levels ${environmentalData?.airQuality.pm25 < 12 ? 'are good' : 'may affect sensitive individuals'}`}
+              description={`Current PM2.5 levels ${getAirQualityValue(environmentalData?.airQuality?.pm25, 0) < 12 ? 'are good' : 'may affect sensitive individuals'}`}
               icon={<CloudIcon />}
-              variant={environmentalData?.airQuality.pm25 < 12 ? 'success' : 'warning'}
+              variant={getAirQualityValue(environmentalData?.airQuality?.pm25, 0) < 12 ? 'success' : 'warning'}
             />
             <InsightCard
               title="UV Protection"
-              description={environmentalData?.weather.uvIndex < 3 ? 'Low UV index today' : 'Wear sunscreen if outdoors'}
+              description={getWeatherValue(environmentalData?.weather?.uvIndex, 0) < 3 ? 'Low UV index today' : 'Wear sunscreen if outdoors'}
               icon={<SunnyIcon />}
-              variant={environmentalData?.weather.uvIndex < 3 ? 'success' : 'warning'}
+              variant={getWeatherValue(environmentalData?.weather?.uvIndex, 0) < 3 ? 'success' : 'warning'}
             />
           </div>
         </div>

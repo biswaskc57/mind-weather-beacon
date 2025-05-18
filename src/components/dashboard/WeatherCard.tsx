@@ -19,8 +19,13 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ weather }) => {
     return { label: 'Very High', color: 'text-red-500' };
   };
   
+  // Safe access to weather data
+  const temperature = weather?.temperature ?? 0;
+  const humidity = weather?.humidity ?? 0;
+  const uvIndex = weather?.uvIndex ?? 0;
+  
   const uvStatus = weather ? 
-    getUVStatus(weather.uvIndex) : 
+    getUVStatus(uvIndex) : 
     { label: 'Unknown', color: 'text-gray-500' };
 
   return (
@@ -35,15 +40,13 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ weather }) => {
         {weather ? (
           <div className="space-y-4">
             <div className="flex justify-between items-baseline">
-              <span className="text-2xl font-bold">{weather.temperature?.toFixed(1) || '0.0'}°C</span>
-              <span className="text-sm text-gray-500">{weather.humidity?.toFixed(0) || '0'}% humidity</span>
+              <span className="text-2xl font-bold">{temperature.toFixed(1)}°C</span>
+              <span className="text-sm text-gray-500">{humidity.toFixed(0)}% humidity</span>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">UV Index</span>
-                <span className={uvStatus.color}>
-                  {weather.uvIndex?.toFixed(1) || '0.0'} ({uvStatus.label})
-                </span>
+                <span className={uvStatus.color}>{uvIndex.toFixed(1)} ({uvStatus.label})</span>
               </div>
             </div>
           </div>
