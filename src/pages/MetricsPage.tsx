@@ -80,7 +80,7 @@ const MetricsPage = () => {
   return (
     <MainLayout>
       <div className="mb-4 md:mb-6">
-        <h1 className="text-xl md:text-2xl font-bold">Health Metrics</h1>
+        <h1 className="text-xl md:text-2xl font-bold">Metrics</h1>
         <p className="text-sm md:text-base text-muted-foreground">Detailed view of your environmental health factors</p>
       </div>
       
