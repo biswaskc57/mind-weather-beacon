@@ -30,7 +30,7 @@ const Header = () => {
           <AvatarImage 
             src="/lovable-uploads/0c1c2ced-7d48-4e89-a842-a3d260f82a29.png" 
             alt="Calmos Logo" 
-            style={{width:"110%"}} 
+            style={{width:"120%"}} 
           />
           <AvatarFallback className="bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-white">
             C
