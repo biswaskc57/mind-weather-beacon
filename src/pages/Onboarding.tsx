@@ -17,11 +17,11 @@ const Onboarding = () => {
     <div className="min-h-screen bg-gradient-to-b from-mindsense-primary/10 to-mindsense-secondary/10 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md mb-8 text-center">
         <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-r from-mindsense-primary to-mindsense-secondary flex items-center justify-center mb-4">
-          <span className="text-white font-bold text-2xl">M</span>
+          <span className="text-white font-bold text-2xl">C</span>
         </div>
-        <h1 className="text-3xl font-bold mb-2">Welcome to MindSense</h1>
+        <h1 className="text-3xl font-bold mb-2">Welcome to Calmos</h1>
         <p className="text-gray-600">
-          Track how your environment affects your mental wellbeing
+          Let space navigate your stress
         </p>
       </div>
       

@@ -10,10 +10,10 @@ const Header = () => {
     <header className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
       <Link to="/" className="flex items-center space-x-3">
         <div className="w-8 h-8 rounded-md bg-gradient-to-r from-mindsense-primary to-mindsense-secondary flex items-center justify-center">
-          <span className="text-white font-bold text-lg">M</span>
+          <span className="text-white font-bold text-lg">C</span>
         </div>
         <span className="text-xl font-bold bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-transparent bg-clip-text">
-          MindSense
+          Calmos
         </span>
       </Link>
       
@@ -26,7 +26,7 @@ const Header = () => {
         <Avatar>
           <AvatarImage src="" />
           <AvatarFallback className="bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-white">
-            MS
+            C
           </AvatarFallback>
         </Avatar>
       </div>
