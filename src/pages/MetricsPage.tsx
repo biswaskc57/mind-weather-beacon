@@ -6,7 +6,6 @@ import PersonalMeters from '@/components/dashboard/PersonalMeters';
 import ChartCard from '@/components/dashboard/ChartCard';
 import InsightCard from '@/components/dashboard/InsightCard';
 import MindWeatherWidget from '@/components/dashboard/MindWeatherWidget';
-import ChatbotWidget from '@/components/dashboard/ChatbotWidget';
 import { useLocation } from '@/hooks/use-location';
 import { useEnvironmentalData } from '@/hooks/use-environmental-data';
 import { useStressMeter } from '@/hooks/use-stress-meter';
@@ -84,9 +83,6 @@ const MetricsPage = () => {
         <h1 className="text-xl md:text-2xl font-bold">Health Metrics</h1>
         <p className="text-sm md:text-base text-muted-foreground">Detailed view of your environmental health factors</p>
       </div>
-      
-      {/* Chatbot Widget */}
-      <ChatbotWidget />
       
       {/* Status Cards */}
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
