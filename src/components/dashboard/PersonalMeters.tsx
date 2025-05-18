@@ -78,15 +78,6 @@ const PersonalMeters = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         <PersonalMeter
-          title="Sleep"
-          value={personalData.sleep.hours}
-          maxValue={9}
-          unit="hrs"
-          icon={<Moon className="h-4 w-4 text-white" />}
-          description={`${personalData.sleep.quality} quality`}
-          color="bg-purple-500"
-        />
-        <PersonalMeter
           title="Heart Rate"
           value={personalData.heartRate.current}
           maxValue={personalData.heartRate.max}
@@ -112,6 +103,15 @@ const PersonalMeters = () => {
           icon={<LineChart className="h-4 w-4 text-white" />}
           description="8,450 steps today"
           color="bg-green-500"
+        />
+        <PersonalMeter
+          title="Sleep"
+          value={personalData.sleep.hours}
+          maxValue={9}
+          unit="hrs"
+          icon={<Moon className="h-4 w-4 text-white" />}
+          description={`${personalData.sleep.quality} quality`}
+          color="bg-purple-500"
         />
       </div>
     </div>
