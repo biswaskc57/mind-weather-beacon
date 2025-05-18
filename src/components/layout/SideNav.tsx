@@ -54,7 +54,7 @@ const SideNavContent = ({ onItemClick }: { onItemClick?: () => void }) => {
         </div>
         <nav className="space-y-1">
           <NavItem to="/" label="Dashboard" icon={<ChartBarIcon />} onClick={onItemClick} />
-          <NavItem to="/metrics" label="Health Metrics" icon={<Activity className="h-5 w-5" />} onClick={onItemClick} />
+          <NavItem to="/metrics" label="Metrics" icon={<Activity className="h-5 w-5" />} onClick={onItemClick} />
           <NavItem to="/environment" label="Environment" icon={<CloudIcon />} onClick={onItemClick} />
           <NavItem to="/location" label="Location" icon={<CompassIcon />} onClick={onItemClick} />
           <NavItem to="/stress" label="Stress Meter" icon={<BrainIcon />} onClick={onItemClick} />
