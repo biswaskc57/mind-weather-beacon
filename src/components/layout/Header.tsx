@@ -27,7 +27,7 @@ const Header = () => {
         </Button>
         
         <Avatar>
-          <AvatarImage src="/lovable-uploads/0c1c2ced-7d48-4e89-a842-a3d260f82a29.png" alt="Calmos Logo" />
+          <AvatarImage src="/lovable-uploads/0c1c2ced-7d48-4e89-a842-a3d260f82a29.png" alt="Calmos Logo" {{width:"110%"}} />
           <AvatarFallback className="bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-white">
             C
           </AvatarFallback>
