@@ -2,6 +2,7 @@
 import React from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import InlineChatbot from './InlineChatbot';
 
 interface WelcomeHeaderProps {
   firstName: string;
@@ -33,16 +34,19 @@ const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ firstName, stressLevel })
       </div>
       
       {/* Stress Analysis Text */}
-      <Card className="max-w-3xl mx-auto mb-16 text-center">
+      <Card className="max-w-3xl mx-auto mb-6 text-center">
         <CardContent className="py-6">
           <p className="text-xl font-medium text-muted-foreground mb-2">
             I can see that today you seem {stressLevel}.
           </p>
-          <p className="text-xl font-medium text-mindsense-primary">
+          <p className="text-xl font-medium text-mindsense-success mb-0">
             I can help you!
           </p>
         </CardContent>
       </Card>
+
+      {/* Inline Chatbot */}
+      <InlineChatbot />
     </>
   );
 };

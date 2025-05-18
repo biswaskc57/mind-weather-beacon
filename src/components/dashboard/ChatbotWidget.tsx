@@ -11,7 +11,7 @@ const ChatbotWidget: React.FC = () => {
   if (isClosed) {
     return (
       <Button
-        className="fixed bottom-4 right-4 rounded-full p-3 bg-mindsense-primary text-white shadow-lg hover:bg-mindsense-primary/90 z-50"
+        className="fixed bottom-4 right-4 rounded-full p-3 bg-mindsense-success text-white shadow-lg hover:bg-mindsense-success/90 z-50"
         onClick={() => setIsClosed(false)}
       >
         <span className="sr-only">Open chat</span>
@@ -22,8 +22,8 @@ const ChatbotWidget: React.FC = () => {
 
   return (
     <Card className={`fixed bottom-4 right-4 overflow-hidden shadow-lg transition-all duration-300 z-50 ${isMinimized ? 'w-64 h-12' : 'w-[380px] h-[600px]'}`}>
-      <div className="bg-mindsense-primary text-white p-2 flex justify-between items-center cursor-pointer" onClick={() => setIsMinimized(!isMinimized)}>
-        <span className="text-sm font-medium">Stress Manager</span>
+      <div className="bg-mindsense-success text-white p-2 flex justify-between items-center cursor-pointer" onClick={() => setIsMinimized(!isMinimized)}>
+        <span className="text-sm font-medium">Calmos Bot</span>
         <div className="flex items-center gap-1">
           {isMinimized ? (
             <Maximize className="w-4 h-4" />
@@ -46,7 +46,7 @@ const ChatbotWidget: React.FC = () => {
             width="100%"
             style={{ height: '562px' }}
             frameBorder="0"
-            title="Stress Manager"
+            title="Calmos Bot"
           />
         </CardContent>
       )}

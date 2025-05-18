@@ -4,7 +4,6 @@ import Header from './Header';
 import SideNav from './SideNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import ChatbotWidget from '@/components/dashboard/ChatbotWidget';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -26,7 +25,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           {children}
         </main>
       </div>
-      <ChatbotWidget />
     </div>
   );
 };
