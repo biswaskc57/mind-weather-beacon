@@ -9,9 +9,11 @@ const Header = () => {
   return (
     <header className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
       <Link to="/" className="flex items-center space-x-3">
-        <div className="w-8 h-8 rounded-md bg-gradient-to-r from-mindsense-primary to-mindsense-secondary flex items-center justify-center">
-          <span className="text-white font-bold text-lg">C</span>
-        </div>
+        <img 
+          src="/lovable-uploads/0c1c2ced-7d48-4e89-a842-a3d260f82a29.png" 
+          alt="Calmos Logo" 
+          className="h-8 w-8"
+        />
         <span className="text-xl font-bold bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-transparent bg-clip-text">
           Calmos
         </span>
