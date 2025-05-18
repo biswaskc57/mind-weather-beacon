@@ -26,11 +26,11 @@ const Header = () => {
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </Button>
         
-        <Avatar>
+        <Avatar  style={{width:"120% important"}} >
           <AvatarImage 
             src="/lovable-uploads/0c1c2ced-7d48-4e89-a842-a3d260f82a29.png" 
             alt="Calmos Logo" 
-            style={{width:"120%"}} 
+            style={{width:"120% important"}} 
           />
           <AvatarFallback className="bg-gradient-to-r from-mindsense-primary to-mindsense-secondary text-white">
             C
