@@ -49,11 +49,6 @@ const PersonalMeter: React.FC<PersonalMeterProps> = ({
 const PersonalMeters = () => {
   // Mock data - in a real app this would come from an API or context
   const personalData = {
-    sleep: {
-      hours: 7.5,
-      target: 9,
-      quality: "Good"
-    },
     heartRate: {
       current: 72,
       resting: 65,
@@ -67,6 +62,11 @@ const PersonalMeters = () => {
     stress: {
       level: 35,
       max: 100
+    },
+    sleep: {
+      hours: 7.5,
+      target: 9,
+      quality: "Good"
     }
   };
 
