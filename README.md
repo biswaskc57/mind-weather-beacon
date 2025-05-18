@@ -1,73 +1,98 @@
-# Welcome to your Lovable project
 
-## Project info
+# 🛰️ MindScape: Predictive Mental Health Insights from Earth & Space
 
-**URL**: https://lovable.dev/projects/6cfd4e41-9b2d-459a-8dea-e82f3509be2a
+**Live Project**: [View on Lovable](https://lovable.dev/projects/6cfd4e41-9b2d-459a-8dea-e82f3509be2a)
 
-## How can I edit this code?
+## 💡 Overview
 
-There are several ways of editing your application.
+**MindScape** is an innovative web application that leverages **Copernicus** and **Galileo satellite data** alongside biometric data from wearables to **predict stress levels** and understand the impact of environmental factors on mental health. 
 
-**Use Lovable**
+By correlating atmospheric variables like **PM2.5, ozone, UV, pollen, noise**, and **humidity** with **heart rate, sleep patterns, and blood oxygen levels**, users receive **personalized mental well-being insights** that promote proactive and preventive care.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6cfd4e41-9b2d-459a-8dea-e82f3509be2a) and start prompting.
+This project was developed for the **"Mental Health and Well-Being"** track of a space-health hackathon challenge.
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 🔧 Technologies Used
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- ⚛️ **React** + **TypeScript**
+- ⚡️ **Vite** (build tool)
+- 🧩 **shadcn/ui** (component library)
+- 🎨 **Tailwind CSS** (styling)
+- 🛰️ **Copernicus & Galileo APIs** (environmental data)
+- ⌚️ **Wearables API integration** (e.g., Empatica E4, Fitbit - planned)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 🚀 Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### 🔁 Option 1: Use Lovable (No Setup Needed)
+
+1. Open [the Lovable project](https://lovable.dev/projects/6cfd4e41-9b2d-459a-8dea-e82f3509be2a)
+2. Prompt and edit visually
+3. Changes are auto-committed to GitHub
+
+### 💻 Option 2: Run Locally in Your IDE
+
+```bash
+# Step 1: Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Step 2: Navigate into the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4: Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 🧠 Option 3: GitHub Codespaces
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Go to your GitHub repo
+2. Click **Code > Codespaces**
+3. Click **New codespace**
+4. Edit and commit changes directly
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🌐 Deployment
 
-## What technologies are used for this project?
+To deploy using Lovable:
 
-This project is built with:
+1. Open your project on Lovable
+2. Click **Share > Publish**
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 🌍 Custom Domain
 
-Simply open [Lovable](https://lovable.dev/projects/6cfd4e41-9b2d-459a-8dea-e82f3509be2a) and click on Share -> Publish.
+To connect a custom domain:
 
-## Can I connect a custom domain to my Lovable project?
+1. Navigate to **Project > Settings > Domains**
+2. Click **Connect Domain**
 
-Yes, you can!
+More info: [Setting up a custom domain](https://docs.lovable.dev/custom-domains)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🔭 Roadmap
+
+- [ ] Real-time wearable integration (Empatica, Fitbit)
+- [ ] ML-based stress prediction model with feedback loop
+- [ ] Daily local health alerts based on satellite & user data
+- [ ] Chatbot to recommend lifestyle changes based on correlations
+
+---
+
+## 🧠 Why This Matters
+
+**Mental health** is deeply affected by both **internal** (biometrics) and **external** (environmental) factors. While wearable tech captures personal health signals, **space data** gives us a powerful lens into invisible triggers — from pollution to radiation. **MindScape bridges that gap** for the first time.
+
+---
+
+## 👑 Developed by
+
+Champion & Team — SpaceTech Innovators for Human Well-Being  
+Built for the **Space-Health Hackathon 2025**
