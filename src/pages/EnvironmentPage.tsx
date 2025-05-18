@@ -21,7 +21,7 @@ const EnvironmentPage = () => {
     { name: 'Week 2', pm25: 15, pm10: 27 },
     { name: 'Week 3', pm25: 18, pm10: 32 },
     { name: 'Week 4', pm25: 14, pm10: 25 },
-    { name: 'Current', pm25: data?.airQuality.pm25 || 15, pm10: data?.airQuality.pm10 || 28 }
+    { name: 'Current', pm25: data?.airQuality?.pm25 || 15, pm10: data?.airQuality?.pm10 || 28 }
   ];
 
   const pollenHistory = [
@@ -29,7 +29,7 @@ const EnvironmentPage = () => {
     { name: 'Week 2', grass: 3, tree: 2, weed: 2 },
     { name: 'Week 3', grass: 4, tree: 3, weed: 3 },
     { name: 'Week 4', grass: 3, tree: 2, weed: 2 },
-    { name: 'Current', grass: data?.pollen.grass || 2, tree: data?.pollen.tree || 1, weed: data?.pollen.weed || 2 }
+    { name: 'Current', grass: data?.pollen?.grass || 2, tree: data?.pollen?.tree || 1, weed: data?.pollen?.weed || 2 }
   ];
 
   const getAirQualityStatus = (pm25: number) => {
@@ -46,8 +46,22 @@ const EnvironmentPage = () => {
     return { label: 'Very High', color: 'text-red-500' };
   };
 
-  const airStatus = data ? getAirQualityStatus(data.airQuality.pm25) : { label: 'Unknown', color: 'text-gray-500' };
-  const uvStatus = data ? getUVStatus(data.weather.uvIndex) : { label: 'Unknown', color: 'text-gray-500' };
+  // Safe access to data with fallback values
+  const airPm25 = data?.airQuality?.pm25 ?? 0;
+  const airPm10 = data?.airQuality?.pm10 ?? 0;
+  const airAqi = data?.airQuality?.aqi ?? 0;
+  const weatherTemp = data?.weather?.temperature ?? 0;
+  const weatherHumidity = data?.weather?.humidity ?? 0;
+  const weatherUvIndex = data?.weather?.uvIndex ?? 0;
+  const pollenGrass = data?.pollen?.grass ?? 0;
+  const pollenTree = data?.pollen?.tree ?? 0;
+  const pollenWeed = data?.pollen?.weed ?? 0;
+
+  // Calculate pollen average safely
+  const pollenAverage = data ? ((pollenGrass + pollenTree + pollenWeed) / 3) : 0;
+
+  const airStatus = data ? getAirQualityStatus(airPm25) : { label: 'Unknown', color: 'text-gray-500' };
+  const uvStatus = data ? getUVStatus(weatherUvIndex) : { label: 'Unknown', color: 'text-gray-500' };
 
   return (
     <MainLayout>
@@ -78,17 +92,17 @@ const EnvironmentPage = () => {
             {data ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-2xl font-bold">{data.airQuality.aqi}</span>
+                  <span className="text-2xl font-bold">{airAqi}</span>
                   <span className={`font-medium ${airStatus.color}`}>{airStatus.label}</span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">PM2.5</span>
-                    <span>{data.airQuality.pm25.toFixed(1)} μg/m³</span>
+                    <span>{airPm25.toFixed(1)} μg/m³</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">PM10</span>
-                    <span>{data.airQuality.pm10.toFixed(1)} μg/m³</span>
+                    <span>{airPm10.toFixed(1)} μg/m³</span>
                   </div>
                 </div>
               </div>
@@ -111,13 +125,13 @@ const EnvironmentPage = () => {
             {data ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-baseline">
-                  <span className="text-2xl font-bold">{data.weather.temperature.toFixed(1)}°C</span>
-                  <span className="text-sm text-gray-500">{data.weather.humidity.toFixed(0)}% humidity</span>
+                  <span className="text-2xl font-bold">{weatherTemp.toFixed(1)}°C</span>
+                  <span className="text-sm text-gray-500">{weatherHumidity.toFixed(0)}% humidity</span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">UV Index</span>
-                    <span className={uvStatus.color}>{data.weather.uvIndex.toFixed(1)} ({uvStatus.label})</span>
+                    <span className={uvStatus.color}>{weatherUvIndex.toFixed(1)} ({uvStatus.label})</span>
                   </div>
                 </div>
               </div>
@@ -141,22 +155,22 @@ const EnvironmentPage = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-baseline">
                   <span className="text-2xl font-bold">
-                    {((data.pollen.grass + data.pollen.tree + data.pollen.weed) / 3).toFixed(1)}
+                    {pollenAverage.toFixed(1)}
                   </span>
                   <span className="text-sm text-gray-500">Average Level (0-5)</span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Grass</span>
-                    <span>{data.pollen.grass}/5</span>
+                    <span>{pollenGrass}/5</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Tree</span>
-                    <span>{data.pollen.tree}/5</span>
+                    <span>{pollenTree}/5</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Weed</span>
-                    <span>{data.pollen.weed}/5</span>
+                    <span>{pollenWeed}/5</span>
                   </div>
                 </div>
               </div>

@@ -20,9 +20,9 @@ const WeatherCard: React.FC<WeatherCardProps> = ({ weather }) => {
   };
   
   // Safe access to weather data
-  const temperature = weather?.temperature ?? 0;
-  const humidity = weather?.humidity ?? 0;
-  const uvIndex = weather?.uvIndex ?? 0;
+  const temperature = typeof weather?.temperature === 'number' ? weather.temperature : 0;
+  const humidity = typeof weather?.humidity === 'number' ? weather.humidity : 0;
+  const uvIndex = typeof weather?.uvIndex === 'number' ? weather.uvIndex : 0;
   
   const uvStatus = weather ? 
     getUVStatus(uvIndex) : 
