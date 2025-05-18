@@ -1,11 +1,11 @@
 
-# 🛰️ MindScape: Predictive Mental Health Insights from Earth & Space
+# 🛰️ Calmos: Predictive Mental Health Insights from Earth & Space
 
 **Live Project**: [View on Lovable](https://lovable.dev/projects/6cfd4e41-9b2d-459a-8dea-e82f3509be2a)
 
 ## 💡 Overview
 
-**MindScape** is an innovative web application that leverages **Copernicus** and **Galileo satellite data** alongside biometric data from wearables to **predict stress levels** and understand the impact of environmental factors on mental health. 
+**Calmos** is an innovative web application that leverages **Copernicus** and **Galileo satellite data** alongside biometric data from wearables to **predict stress levels** and understand the impact of environmental factors on mental health. 
 
 By correlating atmospheric variables like **PM2.5, ozone, UV, pollen, noise**, and **humidity** with **heart rate, sleep patterns, and blood oxygen levels**, users receive **personalized mental well-being insights** that promote proactive and preventive care.
 
